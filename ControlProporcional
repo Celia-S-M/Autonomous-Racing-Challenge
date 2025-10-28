@@ -1,0 +1,43 @@
+import WebGUI
+import HAL
+
+import cv2
+
+i = 0
+velocity = 8
+angulo = 0.01
+while True:
+    img = HAL.getImage()
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    red_mask = cv2.inRange(hsv,
+                            (0, 125, 125),
+                            (30, 225, 225))
+
+    contours, hierarchy = cv2.findContours(red_mask,
+                                            cv2.RETR_TREE,
+                                            cv2.CHAIN_APPROX_SIMPLE)
+    M = cv2.moments(contours[0])
+    # donde hay y donde no hay color/linea
+    # Si tiene que girar o no 
+    if M["m00"] != 0:
+        cX = M["m10"] / M["m00"]
+        cY = M["m01"] / M["m00"]
+    else: 
+        cX, cY = 0, 0
+
+    if cX > 0:
+        err = 320 - cX
+        if err > 80 or err < -80:
+            velocity = 3
+        elif err > 5 or err < -5:
+            velocity = 9.3
+        else:
+            velocity = 8
+        # Metros por segundo
+        HAL.setV(velocity)
+        # Gira en ese algulo radianes * segundo
+        HAL.setW( angulo * err )
+    
+    WebGUI.showImage(red_mask)
+    print('%d cX: %.2f cY: %.2f error: %d' % (i, cX, cY, err))
+    i = i + 1
