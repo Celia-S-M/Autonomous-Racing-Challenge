@@ -1,11 +1,9 @@
 import WebGUI
 import HAL
-
 import cv2
 
 i = 0
-velocity = 8
-angulo = 0.01
+velocity = 9.3
 while True:
     img = HAL.getImage()
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -36,7 +34,7 @@ while True:
         # Metros por segundo
         HAL.setV(velocity)
         # Gira en ese algulo radianes * segundo
-        HAL.setW( angulo * err )
+        HAL.setW( 0.01 * err )
     
     WebGUI.showImage(red_mask)
     print('%d cX: %.2f cY: %.2f error: %d' % (i, cX, cY, err))
