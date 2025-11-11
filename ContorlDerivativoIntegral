@@ -6,10 +6,8 @@ i = 0
 velocity = 8
 Kp = 0.01      
 Kd = 0.0005    
-ki = 0.0000005
 prev_error = 0
 derivative_error = 0
-integral_error = 0
 
 while True:
     img = HAL.getImage()
@@ -32,9 +30,8 @@ while True:
 
     if cX > 0:
         err = 320 - cX
-        integral_error += err
         derivative_error = err - prev_error
-        control = Kp * err + Kd * derivative_error + ki * integral_error
+        control = Kp * err + Kd * derivative_error
         if err > 80 or err < -80:
             velocity = 3
         elif err > 20 or err < -20:
@@ -50,6 +47,5 @@ while True:
         HAL.setW(control)
     
     WebGUI.showImage(red_mask)
-    print('%d cX: %.2f cY: %.2f error: %d' % (i, cX, cY, err))
     i = i + 1
     prev_error = err
