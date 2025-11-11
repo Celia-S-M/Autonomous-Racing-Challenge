@@ -1,3 +1,7 @@
+import WebGUI
+import HAL
+import cv2
+
 Kp = 0.01      
 Kd = 0.0005    
 prev_error = 0
