@@ -62,48 +62,34 @@ else:
 * Python 3.x (solo si vas a ejecutar el controlador localmente).
 * Bibliotecas de Python necesarias: opencv-python, numpy.
 
-### Instalación
-
-1.  Clona este repositorio en tu máquina local:
-    ```bash
-    git clone [https://github.com/TU_USUARIO/TU_REPOSITORIO.git](https://github.com/TU_USUARIO/TU_REPOSITORIO.git)
-    cd TU_REPOSITORIO
-    ```
-
-2.  Instala las dependencias de Python (si aún no las tienes):
-    ```bash
-    pip install opencv-python numpy
-    ```
-
 ### Lanzamiento 
 #### Inicie el contenedor Docker
 Inicie el contenedor Docker en su máquina. Abre una terminal y ejecuta una de las siguientes opciones según tu sistema:
 1. Sin aceleración gráfica (recomendado para la mayoría de usuarios):
-       ```bash
-    docker run --rm -it -p 6080-6090:6080-6090 -p 7163:7163 \
-     jderobot/robotics-backend:latest
-    ```
+   ```bash
+      docker run --rm -it -p 6080-6090:6080-6090 -p 7163:7163 \
+      jderobot/robotics-backend:latest
+   ```
 2. En Linux con tarjeta gráfica:
    ```bash
-   docker run --rm -it --device /dev/dri \
-  -p 6080-6090:6080-6090 -p 7163:7163 \
-  jderobot/robotics-backend:latest
-  ```
+      docker run --rm -it --device /dev/dri \
+     -p 6080-6090:6080-6090 -p 7163:7163 \
+     jderobot/robotics-backend:latest
+   ```
 3. En sistemas con GPU Nvidia:
 (asegúrate de tener instalados los drivers propietarios y el [Nvidia Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
     ```bash
-    docker run --rm -it --device /dev/dri --gpus all \
-  -p 6080-6090:6080-6090 -p 7163:7163 \
-  jderobot/robotics-backend:latest
+       docker run --rm -it --device /dev/dri --gpus all \
+       -p 6080-6090:6080-6090 -p 7163:7163 \
+       jderobot/robotics-backend:latest
     ```
 Mientras el contenedor esté en ejecución, podrá navegar por Unibotics sin necesidad de reiniciarlo.
 
 ##### Reiniciar el Docker
-```bash
-docker ps -a
-Stop the container using:docker stop CONTAINER_ID
-Remove that container using:docker rm CONTAINER_ID
- ```
+*   Identificar contenedores Docker activos: `docker ps -a`
+*   Detener el contenedor: `docker stop ID_DEL_CONTENEDOR`
+*   Eliminar el contenedor: `docker rm ID_DEL_CONTENEDOR`
+   
 #### Flujo de Trabajo en Unibotics
 Una vez que el contenedor del Robotics Backend se esté ejecutando en tu terminal, sigue estos pasos para conectarte y ejecutar un ejercicio:
 
