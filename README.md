@@ -18,14 +18,30 @@ El primer paso es identificar la línea a seguir. El proceso es el siguiente:
     * Si `error < 0`, la línea está a la izquierda del coche.
 
 ### Controlador PD
+El seguimiento de la línea se realiza mediante un controlador PID (Proporcional–Integral–Derivativo), un mecanismo de control basado en la retroalimentación del sistema. Este controlador calcula continuamente el error entre la posición deseada y la actual, y ajusta el movimiento del vehículo en consecuencia.
 
-Para que el coche siga la línea, se implementa un controlador de bucle cerrado. Este controlador calcula continuamente el error y aplica una corrección. Para este proyecto, se utilizó un **controlador PD** (Proporcional-Derivativo).
+#### Componentes del Controlador
+* **Proporcional (P):** Corrige el error actual. La velocidad angular del coche es proporcional a la magnitud del error: cuanto más se desvía, más corrige la dirección.
+* **Integral (I):** Compensa errores acumulados en el tiempo. Si el coche tiende a desviarse sistemáticamente, este término elimina el offset o sesgo residual.
+* **Derivativo (D):** Actúa sobre la tasa de cambio del error, anticipando movimientos bruscos y suavizando la respuesta del sistema.
 
-* **Término Proporcional (P):** Corrige el error actual. Es la base del control: la velocidad angular (giro) es *proporcional* al error.
-* **Término Derivativo (D):** Considera la *tasa de cambio* del error (el error actual menos el error anterior). Este término ayuda a amortiguar las oscilaciones y a anticipar curvas, suavizando el movimiento del coche.
-
+La ecuación general del control es:
 La velocidad angular (`w`) se calcula como: `w = (Kp * error) + (Kd * derivada_del_error)`.
 La velocidad lineal (`v`) se mantiene constante para simplificar el control.
+
+#### Variantes y Ajuste
+Durante el desarrollo se probaron distintas configuraciones:
+* **Controlador P:** * La forma más básica. Corrige el error directamente en proporción a su magnitud. Puede ser inestable o lento si Kp no se ajusta correctamente.
+* **Controlador PD:** * Añade la derivada del error para amortiguar las oscilaciones y anticipar curvas. Es el enfoque principal utilizado en esta solución.
+* **Controlador PID completo:** * Incluye el término integral para eliminar errores persistentes. Resulta útil en circuitos con trayectorias largas o curvas suaves.
+El ajuste de las ganancias (`Kp`, `Ki`, `Kd`) se realizó experimentalmente hasta obtener una respuesta estable y fluida.
+
+| Parámetro | Valor |
+| :-- | --: |
+| **Kp** | 0.01 |
+| **Ki** | 0.00005 |
+| **Kd** | 0.0005 |
+
 
 ## 3. Instrucciones de Ejecución
 
@@ -72,6 +88,10 @@ A continuación, se muestra el funcionamiento del algoritmo. La imagen superior 
 
 
 ### Rendimiento
-* **Término Proporcional (P):** 112
-* **Término Integral (I):**
-* **Término Derivativo (D):**
+* **Término Proporcional (P):** 109,96
+* **Término Integral (I):** 	96,67	
+* **Término Derivativo (D):** 126,41
+
+# 5. Conclusión
+Este proyecto demuestra cómo el uso de visión por computadora combinada con control PID permite desarrollar un sistema de navegación autónomo eficaz y estable.
+El ajuste fino de las ganancias del controlador es clave para lograr un equilibrio entre precisión, suavidad y velocidad de respuesta.
