@@ -27,11 +27,11 @@ El seguimiento de la línea se realiza mediante un controlador PID (Proporcional
 
 #### Variantes y Ajuste
 Durante el desarrollo se probaron distintas configuraciones:
-* **Controlador P (ControlProporcional):** * La forma más básica. Corrige el error directamente en proporción a su magnitud. Puede ser inestable o lento si Kp no se ajusta correctamente.
+* **Controlador P (ControlProporcional):** La forma más básica. Corrige el error directamente en proporción a su magnitud. Puede ser inestable o lento si Kp no se ajusta correctamente.
      La velocidad angular (`control`) se calcula como: `control = (Kp * erro)`.
-* **Controlador PD (ControlDerivativo):** * Añade la derivada del error para amortiguar las oscilaciones y anticipar curvas. Es el enfoque principal utilizado en esta solución.
+* **Controlador PD (ControlDerivativo):**  Añade la derivada del error para amortiguar las oscilaciones y anticipar curvas. Es el enfoque principal utilizado en esta solución.
     La velocidad angular (`control`) se calcula como: `control = (Kp * erro) + (kd * derivative_error)`, donde el `derivative_error` es la diferencia entre el error actual y el anterior, calculado como: `derivative_error = error - prev_error`.
-* **Controlador PID completo (ContorlDerivativoIntegral):** * Incluye el término integral para eliminar errores persistentes. Resulta útil en circuitos con trayectorias largas o curvas suaves.
+* **Controlador PID completo (ContorlDerivativoIntegral):** Incluye el término integral para eliminar errores persistentes. Resulta útil en circuitos con trayectorias largas o curvas suaves.
   La velocidad angular (`control`) se calcula como: `control = (Kp * erro) + (kd * derivative_error) + (ki * integral_error)`, donde el `integral_error` es el error acumulado, calculado como: `integral_error += error`.
   
 El ajuste de las ganancias (`Kp`, `Ki`, `Kd`) se realizó experimentalmente hasta obtener una respuesta estable y fluida.
@@ -54,14 +54,13 @@ else:
   velocity = 6
 ```
 
-
 ## 3. Instrucciones de Ejecución
 
 ### Prerrequisitos
-
-* [cite_start]Tener Robotics Academy instalado y configurado (ver [guía de usuario](https://jderobot.github.io/RoboticsAcademy/user_guide/#installation))[cite: 8, 9].
-* Python 3.x.
-* [cite_start]Bibliotecas de Python: `opencv-python`, `numpy` (necesarias para el procesamiento de imágenes [cite: 163, 164]).
+* Tener Docker instalado y funcionando correctamente.
+* Tener acceso a Unibotics o Robotics Academy.
+* Python 3.x (solo si vas a ejecutar el controlador localmente).
+* Bibliotecas de Python necesarias: opencv-python, numpy.
 
 ### Instalación
 
@@ -76,14 +75,62 @@ else:
     pip install opencv-python numpy
     ```
 
-### Lanzamiento
-
-1.  En una terminal, lanza el ejercicio `follow_line` desde la aplicación de Robotics Academy.
-2.  Abre una segunda terminal y navega al directorio donde clonaste este repositorio.
-3.  Ejecuta el script de la solución:
-    ```bash
-    python follow_line_solution.py
+### Lanzamiento 
+#### Inicie el contenedor Docker
+Inicie el contenedor Docker en su máquina. Abre una terminal y ejecuta una de las siguientes opciones según tu sistema:
+1. Sin aceleración gráfica (recomendado para la mayoría de usuarios):
+       ```bash
+    docker run --rm -it -p 6080-6090:6080-6090 -p 7163:7163 \
+     jderobot/robotics-backend:latest
     ```
+2. En Linux con tarjeta gráfica:
+   ```bash
+   docker run --rm -it --device /dev/dri \
+  -p 6080-6090:6080-6090 -p 7163:7163 \
+  jderobot/robotics-backend:latest
+  ```
+3. En sistemas con GPU Nvidia:
+(asegúrate de tener instalados los drivers propietarios y el [Nvidia Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
+    ```bash
+    docker run --rm -it --device /dev/dri --gpus all \
+  -p 6080-6090:6080-6090 -p 7163:7163 \
+  jderobot/robotics-backend:latest
+    ```
+Mientras el contenedor esté en ejecución, podrá navegar por Unibotics sin necesidad de reiniciarlo.
+
+##### Reiniciar el Docker
+```bash
+docker ps -a
+Stop the container using:docker stop CONTAINER_ID
+Remove that container using:docker rm CONTAINER_ID
+ ```
+#### Flujo de Trabajo en Unibotics
+Una vez que el contenedor del Robotics Backend se esté ejecutando en tu terminal, sigue estos pasos para conectarte y ejecutar un ejercicio:
+
+1. Acceder y Autenticarse:
+* Ve a https://unibotics.org en tu navegador.
+* Si eres un usuario nuevo, haz clic en REGISTER. Deberás completar los campos: Nombre (Name), Apellido (Surname), Nombre de usuario (Username), Email y Contraseña (Password).
+* Si ya tienes una cuenta, haz clic en LOG IN e introduce tu Nombre de usuario (Username) y Contraseña (Password).
+
+2. Navegar a la Academia:
+* Después de iniciar sesión, serás dirigido al panel de aplicaciones (unibotics.org/apps).
+* Haz clic en Robotics Academy (Learn robotics facing practical challenges).
+
+3. Seleccionar un Ejercicio:
+* Dentro de la Academia, selecciona un curso disponible, como el Free Course.
+* Elige uno de los ejercicios prácticos disponibles. El PDF muestra la selección del ejercicio Follow Line.
+
+4. Conectar y Ejecutar:
+* Se abrirá la interfaz del ejercicio, mostrando el editor de código Python a la izquierda y los monitores de simulación a la derecha.
+* Verás un mensaje que dice "Click Play to connect to the Robotics Backend".
+* Haz clic en el botón Connect (o el botón de Play).
+* La interfaz web se conectará a tu contenedor Docker local. Tu terminal de Docker mostrará un mensaje confirmando la conexión, como "client connected".
+
+5. Probar el Código:
+* Una vez conectado, la simulación se iniciará.
+* Puedes ver la simulación 3D del robot y monitores adicionales como el Im Monitor que muestra la visión de la cámara del robot.
+* El código Python se estará ejecutando, y la consola en la interfaz web mostrará cualquier salida.
+
 
 ## 4. Ejemplos y Rendimiento
 
